@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Shopping | Sign Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #120f0d;
+      --bg-soft: #1d1917;
+      --surface: rgba(26, 22, 20, 0.82);
+      --surface-strong: #f7f3ef;
+      --text: #f5f1ee;
+      --muted: #d0c4bb;
+      --line: rgba(255,255,255,0.1);
+      --accent: #d96b4a;
+      --accent-2: #f3c98c;
+      --shadow: 0 22px 50px rgba(0, 0, 0, 0.35);
+      --radius: 26px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(211, 177, 136, 0.24), transparent 28%),
+        linear-gradient(135deg, #120f0d 0%, #1a1715 42%, #0f0d0d 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      opacity: 0.6;
+      animation: drift 10s ease-in-out infinite alternate;
+    }
+
+    body::before {
+      width: 420px; height: 420px;
+      left: -80px; top: 100px;
+      background: rgba(217, 107, 74, 0.18);
+    }
+
+    body::after {
+      width: 420px; height: 420px;
+      right: -60px; bottom: 40px;
+      background: rgba(153, 195, 255, 0.14);
+      animation-delay: 2s;
+    }
+
+    @keyframes drift {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-30px) scale(1.08); }
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 28px));
+      min-height: 720px;
+      display: grid;
+      grid-template-columns: 1.06fr 0.94fr;
+      background: rgba(22, 18, 17, 0.8);
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(20px);
+    }
+
+    .brand-panel {
+      position: relative;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
+        url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+      padding: 40px 38px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(12,10,10,0.18), rgba(12,10,10,0.72));
+    }
+
+    .brand-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.06em;
+      font-size: 2rem;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--accent) 0%, #f1a768 100%);
+      box-shadow: 0 14px 18px rgba(217,107,74,0.3);
+    }
+
+    .brand-header span { color: var(--accent-2); }
+
+    .brand-copy {
+      max-width: 420px;
+      margin-top: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f7e7d2;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.3rem, 4vw, 4.1rem);
+      line-height: 1.02;
+      letter-spacing: -0.07em;
+      max-width: 430px;
+      margin-bottom: 18px;
+    }
+
+    .brand-copy p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.02rem;
+      line-height: 1.7;
+      max-width: 420px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 32px;
+    }
+
+    .stats div {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      padding: 16px 12px;
+      backdrop-filter: blur(8px);
+    }
+
+    .stats strong {
+      display: block;
+      font-size: 1.5rem;
+      letter-spacing: -0.06em;
+      margin-bottom: 6px;
+    }
+
+    .stats span {
+      color: rgba(255,255,255,0.72);
+      font-size: 0.8rem;
+    }
+
+    .form-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 34px 30px;
+      background: rgba(18, 15, 13, 0.86);
+    }
+
+    .card {
+      width: min(100%, 440px);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 26px;
+      padding: 26px 22px 22px;
+      box-shadow: 0 18px 30px rgba(15, 13, 12, 0.25);
+    }
+
+    .card-head {
+      margin-bottom: 20px;
+    }
+
+    .card-head h2 {
+      font-size: 2rem;
+      letter-spacing: -0.06em;
+      margin-bottom: 6px;
+    }
+
+    .card-head p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .two-up {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-group input {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 14px 14px 14px 16px;
+      font-size: 0.96rem;
+      outline: none;
+      transition: 0.25s ease;
+    }
+
+    .input-group input:focus {
+      border-color: rgba(248, 198, 125, 0.7);
+      box-shadow: 0 0 0 3px rgba(248, 198, 125, 0.12);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .checkbox-row input {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+
+    .primary-btn {
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent) 0%, #f4be78 100%);
+      color: #1a1715;
+      padding: 15px 18px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 16px 18px rgba(217, 107, 74, 0.22);
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 20px rgba(217, 107, 74, 0.28);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin: 6px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      flex: 1;
+    }
+
+    .alt-btn {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .subtle-link {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 6px;
+    }
+
+    .subtle-link a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    @media (max-width: 860px) {
+      .shell { grid-template-columns: 1fr; }
+      .brand-panel { min-height: 360px; }
+      .form-panel { padding-top: 8px; }
+    }
+
+    @media (max-width: 520px) {
+      .two-up { grid-template-columns: 1fr; }
+      .brand-panel { padding: 28px 22px; }
+      .card { padding: 22px 18px; }
+      .card-head h2 { font-size: 1.7rem; }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="brand-panel">
+      <div class="brand-header">
+        <div class="brand-mark">H</div>
+        Happy <span>Shopping</span>
+      </div>
+
+      <div class="brand-copy">
+        <div class="eyebrow">Welcome aboard</div>
+        <h1>Build a home you love.</h1>
+        <p>Join thousands of shoppers exploring elevated essentials, seasonal finds, and exclusive rewards designed for everyday living.</p>
+
+        <div class="stats">
+          <div>
+            <strong>24K+</strong>
+            <span>Members</span>
+          </div>
+          <div>
+            <strong>4.9/5</strong>
+            <span>Rating</span>
+          </div>
+          <div>
+            <strong>2-day</strong>
+            <span>Delivery</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-panel">
+      <div class="card">
+        <div class="card-head">
+          <h2>Create account</h2>
+          <p>Start shopping smarter with curated picks.</p>
+        </div>
+
+        <form id="signupForm">
+          <div class="two-up">
+            <div class="input-group">
+              <input type="text" placeholder="First name" aria-label="First name" required />
+            </div>
+            <div class="input-group">
+              <input type="text" placeholder="Last name" aria-label="Last name" required />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <input type="email" placeholder="Email address" aria-label="Email address" required />
+          </div>
+
+          <div class="input-group">
+            <input type="password" placeholder="Create password" aria-label="Create password" required />
+          </div>
+
+          <div class="input-group">
+            <input type="password" placeholder="Confirm password" aria-label="Confirm password" required />
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" required />
+            <span>I agree to the terms and privacy policy</span>
+          </label>
+
+          <button class="primary-btn" type="submit">Create account</button>
+
+          <div class="divider">or</div>
+
+          <button class="alt-btn" type="button">Continue with Google</button>
+
+          <div class="subtle-link">Already a member? <a href="index.html">Sign in</a></div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const password = form.querySelectorAll('input[type="password"]')[0]?.value || '';
+      const confirm = form.querySelectorAll('input[type="password"]')[1]?.value || '';
+
+      if (password !== confirm) {
+        alert('Passwords do not match. Please try again.');
+        return;
+      }
+
+      alert('Account created successfully. Redirecting to the login page.');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f5f1">
+    <title>Happy Shopping — Premium Login</title>
+    <meta name="google-auth-endpoint" content="https://happyshopping.netlify.app/.netlify/functions/auth-google">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #1e211f;
+            --muted: #737873;
+            --paper: #f7f5f1;
+            --surface: #fff;
+            --accent: #bd5838;
+            --accent-dark: #99442b;
+            --line: rgba(30, 33, 31, .12);
+            --serif: Georgia, "Times New Roman", serif;
+            --sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 32px 20px;
+            display: grid;
+            place-items: center;
+            overflow-x: hidden;
+            background: radial-gradient(ellipse at 12% 10%, rgba(189, 88, 56, .11), transparent 34%), var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            -webkit-font-smoothing: antialiased;
+        }
+        button, input { font: inherit; }
+        .container {
+            width: min(100%, 1020px);
+            min-height: 540px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 28px 80px rgba(39, 38, 34, .12);
+            animation: card-arrive .7s cubic-bezier(.2, .7, .2, 1) both;
+        }
+        .form-box {
+            padding: clamp(32px, 6vw, 70px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-box.fade-in { animation: form-arrive .65s both; }
+        .welcome.slide-in { animation: welcome-arrive .8s both; }
+        .form-box h2 {
+            margin: 0 0 25px;
+            color: var(--ink);
+            font-family: var(--serif);
+            font-size: clamp(32px, 4vw, 42px);
+            font-weight: 400;
+            letter-spacing: -.05em;
+        }
+        .auth-eyebrow, .welcome-eyebrow {
+            margin: 0 0 12px;
+            color: var(--accent-dark);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+        }
+        .input-group { margin-bottom: 13px; }
+        input {
+            width: 100%;
+            min-height: 50px;
+            padding: 13px 15px;
+            border: 1px solid #deddd7;
+            border-radius: 3px;
+            outline: none;
+            background: #fff;
+            color: var(--ink);
+            font-size: 14px;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+        }
+        input::placeholder { color: #888b85; }
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(189, 88, 56, .12);
+            background: #fffdfa;
+        }
+        .btn-primary, .btn-secondary, .google-btn {
+            width: 100%;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 11px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .btn-primary {
+            margin-top: 11px;
+            border: 1px solid var(--ink);
+            border-radius: 3px;
+            background: var(--ink);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            background: var(--accent);
+            box-shadow: 0 9px 22px rgba(189, 88, 56, .2);
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin: 19px 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+        .divider::before, .divider::after { height: 1px; flex: 1; content: ""; background: var(--line); }
+        .google-btn {
+            border: 1px solid #d9dad7;
+            border-radius: 3px;
+            background: #fff;
+            color: #3c4043;
+        }
+        .google-btn:hover { transform: translateY(-1px); border-color: #aeb1ac; background: #fbfbfa; }
+        .google-btn iframe { max-width: 100%; }
+        .google-btn:focus-visible, .btn-primary:focus-visible, .btn-secondary:focus-visible, a:focus-visible {
+            outline: 3px solid rgba(189, 88, 56, .35);
+            outline-offset: 3px;
+        }
+        .google-mark { width: 18px; height: 18px; flex: 0 0 18px; }
+        .auth-message { min-height: 0; margin: 0; font-size: 13px; line-height: 1.5; }
+        .auth-message:not(:empty) { margin-top: 12px; }
+        .auth-message.is-error { color: var(--accent-dark); }
+        .auth-message.is-success { color: #28644b; }
+        .demo-note { margin: 12px 0 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+        .btn-secondary {
+            margin-top: 17px;
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            background: transparent;
+            color: var(--ink);
+        }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent-dark); }
+        .back-link {
+            margin-top: 19px;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
+            text-decoration-color: transparent;
+            text-underline-offset: 4px;
+            transition: color .2s, text-decoration-color .2s;
+        }
+        .back-link:hover { color: var(--accent-dark); text-decoration-color: currentColor; }
+        .welcome {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            padding: clamp(35px, 5vw, 62px);
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            background: linear-gradient(145deg, #285b4c, #17392f 72%);
+            color: #fff;
+            clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%);
+            animation: welcome-arrive .8s .14s both;
+        }
+        .welcome::before, .welcome::after {
+            position: absolute;
+            z-index: -1;
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 50%;
+            content: "";
+            pointer-events: none;
+            animation: ring-float 8s ease-in-out infinite alternate;
+        }
+        .welcome::before {
+            width: 330px;
+            height: 330px;
+            top: 9%;
+            right: -17%;
+            box-shadow: 0 0 0 35px rgba(255,255,255,.035), 0 0 0 70px rgba(255,255,255,.025);
+        }
+        .welcome::after {
+            width: 90px;
+            height: 90px;
+            top: 23%;
+            left: 17%;
+            border-color: rgba(189, 88, 56, .55);
+            background: rgba(189, 88, 56, .08);
+            animation-delay: -3s;
+        }
+        .welcome h2 {
+            max-width: 430px;
+            margin: 0 0 16px;
+            color: #fff;
+            font-family: var(--serif);
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 400;
+            letter-spacing: -.055em;
+            line-height: 1.02;
+        }
+        .welcome-eyebrow { color: #e3b989; }
+        .welcome p { max-width: 390px; margin: 0; color: rgba(255,255,255,.72); font-size: 14px; line-height: 1.8; }
+        .welcome::selection { background: var(--accent); }
+        @keyframes card-arrive { from { opacity: 0; transform: translateY(18px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes form-arrive { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes welcome-arrive { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes ring-float { from { transform: translate3d(0, -8px, 0) rotate(-5deg); } to { transform: translate3d(8px, 12px, 0) rotate(5deg); } }
+        @media (max-width: 720px) {
+            body { padding: 18px 14px; }
+            .container { max-width: 500px; min-height: 0; grid-template-columns: 1fr; border-radius: 8px; }
+            .welcome { min-height: 220px; order: -1; padding: 30px; }
+            .welcome::before { width: 230px; height: 230px; top: -34%; right: -10%; }
+            .welcome::after { width: 58px; height: 58px; top: 15%; left: auto; right: 24%; }
+            .welcome h2 { max-width: 340px; font-size: 38px; }
+            .welcome p { max-width: 360px; font-size: 13px; }
+            .form-box { padding: 32px clamp(23px, 8vw, 42px) 36px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="form-box fade-in" id="formBox">
+        <p class="auth-eyebrow">Happy Shopping · The everyday edit</p>
+        <h2 id="title">Sign in</h2>
+
+        <form id="authForm">
+            <div class="input-group" id="nameGroup" style="display: none;">
+                <input type="text" id="fullname" placeholder="Full Name" autocomplete="name">
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Username or Email" autocomplete="username" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submitBtn">Sign in</button>
+        </form>
+        <div class="divider" id="authDivider" aria-hidden="true">or continue with</div>
+        <div class="google-btn" id="googleSignInButton" aria-label="Continue with Google">
+            <svg class="google-mark" viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.27 5.48-4.78 7.18l7.73 6C44.4 37.93 46.98 31.7 46.98 24.55z"/>
+                <path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.12.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.88.93 7.55 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.89 2.3-8.17 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Continue with Google
+        </div>
+        <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+        <p class="demo-note">Demo accounts are saved in this browser only. This static page does not provide production-grade account security.</p>
+
+        <button type="button" class="btn-secondary" id="toggleBtn">
+            Create an account
+        </button>
+        <a class="back-link" href="index.html">Back to store</a>
+    </div>
+
+    <div class="welcome slide-in" id="welcomeBox">
+        <p class="welcome-eyebrow">CURATED FOR EVERYDAY</p>
+        <h2 id="welcomeTitle">Welcome back.</h2>
+        <p id="welcomeText">
+            Thoughtful finds for fashion, home, and everything in between.
+        </p>
+    </div>
+
+</div>
+
+<script>
+    let isSignup = false;
+    const authForm = document.getElementById("authForm");
+    const nameInput = document.getElementById("fullname");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const authMessage = document.getElementById("authMessage");
+    const usersStorageKey = "hs_users";
+    const googleClientId = "209124503371-r2t0tmre4dut128bhru63nhgjh6s071n.apps.googleusercontent.com";
+    const googleVerificationEndpoint = document.querySelector('meta[name="google-auth-endpoint"]').content.trim();
+    let googleSignInReady = false;
+
+    function showMessage(message, isError = true) {
+        authMessage.textContent = message;
+        authMessage.classList.toggle("is-error", isError && Boolean(message));
+        authMessage.classList.toggle("is-success", !isError && Boolean(message));
+    }
+
+    function readUsers() {
+        const storedUsers = localStorage.getItem(usersStorageKey);
+        if (!storedUsers) return [];
+
+        const users = JSON.parse(storedUsers);
+        if (!Array.isArray(users)) throw new Error("Saved account data is invalid.");
+        return users;
+    }
+
+    async function hashPassword(password, salt) {
+        if (!window.crypto?.subtle) throw new Error("Secure password hashing is unavailable in this browser. Open the site using localhost or HTTPS.");
+        const encoder = new TextEncoder();
+        const key = await window.crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
+        const bits = await window.crypto.subtle.deriveBits({
+            name: "PBKDF2",
+            salt: Uint8Array.from(atob(salt), (character) => character.charCodeAt(0)),
+            iterations: 150000,
+            hash: "SHA-256"
+        }, key, 256);
+        return Array.from(new Uint8Array(bits), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    }
+
+    function createSalt() {
+        const bytes = window.crypto.getRandomValues(new Uint8Array(16));
+        return btoa(String.fromCharCode(...bytes));
+    }
+
+    async function handleGoogleCredential(response) {
+        if (!response.credential) {
+            showMessage("Google did not return a sign-in credential. Please try again.");
+            return;
+        }
+
+        try {
+            if (!googleVerificationEndpoint) {
+                throw new Error("Google account selection is ready, but secure sign-in verification needs your server endpoint. Set the google-auth-endpoint meta value after configuring the backend.");
+            }
+
+            const verificationUrl = new URL(googleVerificationEndpoint, window.location.href);
+            const verificationResponse = await fetch(verificationUrl, {
+                method: "POST",
+                headers: { Accept: "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({ credential: response.credential })
+            });
+            if (!verificationResponse.ok) {
+                throw new Error("Google sign-in could not be verified. Please try again.");
+            }
+
+            const account = await verificationResponse.json();
+            if (!account || typeof account.name !== "string" || typeof account.email !== "string") {
+                throw new Error("Google sign-in verification returned invalid account details.");
+            }
+
+            sessionStorage.setItem("hs_current_user", JSON.stringify({
+                name: account.name,
+                username: account.email,
+                picture: typeof account.picture === "string" ? account.picture : "",
+                provider: "google"
+            }));
+            window.location.href = "index.html";
+        } catch (error) {
+            showMessage(error instanceof Error ? error.message : "Unable to complete Google sign-in.");
+        }
+    }
+
+    function initializeGoogleSignIn() {
+        const googleButton = document.getElementById("googleSignInButton");
+        if (googleSignInReady || !window.google?.accounts?.id || !googleButton.clientWidth) return;
+        window.google.accounts.id.initialize({
+            client_id: googleClientId,
+            callback: handleGoogleCredential,
+            ux_mode: "popup",
+            auto_select: false
+        });
+        window.google.accounts.id.renderButton(googleButton, {
+            type: "standard",
+            theme: "outline",
+            size: "large",
+            text: "continue_with",
+            shape: "rectangular",
+            logo_alignment: "left",
+            width: Math.min(400, Math.floor(googleButton.clientWidth))
+        });
+        googleSignInReady = true;
+    }
+
+    function toggleForm() {
+        isSignup = !isSignup;
+
+        const formBox = document.getElementById("formBox");
+        const welcomeBox = document.getElementById("welcomeBox");
+
+        // Re-trigger CSS animations
+        formBox.classList.remove("fade-in");
+        welcomeBox.classList.remove("slide-in");
+        void formBox.offsetWidth;
+        void welcomeBox.offsetWidth;
+        formBox.classList.add("fade-in");
+        welcomeBox.classList.add("slide-in");
+
+        // UI text changes
+        document.getElementById("title").textContent = isSignup ? "Create Account" : "Sign in";
+        document.getElementById("submitBtn").textContent = isSignup ? "Register Now" : "Sign in";
+        document.getElementById("toggleBtn").textContent = isSignup ? "Already have an account? Sign in" : "Create an account";
+        document.getElementById("nameGroup").style.display = isSignup ? "block" : "none";
+        document.getElementById("authDivider").hidden = isSignup;
+        document.getElementById("googleSignInButton").hidden = isSignup;
+        nameInput.required = isSignup;
+        passwordInput.autocomplete = isSignup ? "new-password" : "current-password";
+        authForm.reset();
+        showMessage("");
+
+        document.getElementById("welcomeTitle").textContent = isSignup ? "Join Happy Shopping." : "Welcome back.";
+        document.getElementById("welcomeText").textContent = isSignup
+            ? "Create an account and make your next visit to Happy Shopping feel a little more personal."
+            : "Thoughtful finds for fashion, home, and everything in between.";
+    }
+
+    document.getElementById("toggleBtn").addEventListener("click", toggleForm);
+
+    window.addEventListener("load", initializeGoogleSignIn);
+    window.addEventListener("resize", initializeGoogleSignIn);
+
+    authForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const username = usernameInput.value.trim();
+        const normalizedUsername = username.toLocaleLowerCase();
+        const password = passwordInput.value;
+
+        try {
+            if (isSignup) {
+                const name = nameInput.value.trim();
+                if (!name) {
+                    showMessage("Please enter your full name.");
+                    nameInput.focus();
+                    return;
+                }
+                if (password.length < 8) {
+                    showMessage("Choose a password with at least 8 characters.");
+                    passwordInput.focus();
+                    return;
+                }
+                if (normalizedUsername === "admin") {
+                    showMessage("That username is reserved. Please choose another one.");
+                    usernameInput.focus();
+                    return;
+                }
+
+                const users = readUsers();
+                if (users.some((user) => user.username.toLocaleLowerCase() === normalizedUsername)) {
+                    showMessage("An account with that username or email already exists.");
+                    usernameInput.focus();
+                    return;
+                }
+
+                const salt = createSalt();
+                const passwordHash = await hashPassword(password, salt);
+                users.push({ name, username, salt, passwordHash });
+                localStorage.setItem(usersStorageKey, JSON.stringify(users));
+                toggleForm();
+                showMessage("Account created. You can now sign in.", false);
+                usernameInput.value = username;
+                return;
+            }
+
+            if (normalizedUsername === "admin" && password === "admin123") {
+                sessionStorage.setItem("hs_admin_authenticated", "true");
+                window.location.href = "index.html?admin=1";
+                return;
+            }
+
+            const users = readUsers();
+            const user = users.find((account) => account.username.toLocaleLowerCase() === normalizedUsername);
+            if (!user || await hashPassword(password, user.salt) !== user.passwordHash) {
+                showMessage("Username/email or password is incorrect.");
+                passwordInput.focus();
+                return;
+            }
+
+            sessionStorage.setItem("hs_current_user", JSON.stringify({ name: user.name, username: user.username }));
+            window.location.href = "index.html";
+        } catch (error) {
+            showMessage(error instanceof Error ? error.message : "Unable to complete sign in. Please try again.");
+        }
+    });
+</script>
+
+</body>
+</html>
