@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "google-auth-library": "^11.3.1"
   }

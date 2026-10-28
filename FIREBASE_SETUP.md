@@ -5,9 +5,9 @@ The Firebase web-app configuration is in `firebase-config.js`. It identifies the
 ## Enable services
 
 1. In Firebase Console, open project `happy-shopping-c5048`.
-2. In Authentication, enable Email/Password and Google sign-in. Set the public site hostname under Authentication's authorized domains. For local testing, serve the site from `localhost`; opening it as a `file://` URL is not supported for Firebase sign-in.
+2. In Authentication, enable Email/Password and Google sign-in. Add `127.0.0.1` to Authentication's authorized domains for local testing; opening the site as a `file://` URL is not supported for Firebase sign-in.
 3. Create the Firestore database and Storage bucket in the console.
-4. Serve the site over HTTP(S).
+4. In the project folder, run `npm start` and open `http://127.0.0.1:4173`. Do not open `index.html` directly as a `file://` URL: browsers block Firebase modules and sign-in on file URLs.
 5. Deploy `firestore.rules` and `storage.rules` from this project. Admin-only rules require both the server-granted `admin` custom claim and the configured administrator email.
 
 ## Grant admin access
@@ -16,7 +16,7 @@ The email `fmfasly@gmail.com` is the intended administrator account, but an emai
 
 ## Data contracts
 
-- Public catalog: documents in `products` with `published: true`, a non-empty `name`, and a numeric non-negative `price` in LKR. Optional fields are `category` (`apparel`, `home`, `beauty`, `electronics`, or `other`) and `imageUrl` (HTTP(S) URL).
+- Public catalog: documents in `products` with `published: true`, a non-empty `name`, and a numeric non-negative `price` in LKR. Optional fields are `category` (`apparel`, `home`, `beauty`, `electronics`, or `other`) and `imageUrl` (HTTP(S) URL). The storefront fetches up to 60 published products once per page load to avoid a permanent database listener.
 - Customer profiles: `users/{uid}` stores the account's display name, email, and creation time. Customers can only access their own profile.
 - Orders: `orders/{orderId}` is readable by its authenticated owner and admins. Client-side order creation is intentionally denied. Add a trusted Cloud Function or other server-side order endpoint to validate prices and stock, create orders, update inventory, grant tracking access, and notify admins.
 - Product image uploads are limited to authenticated admins, image content types, and files smaller than 10 MB in `products/`.
