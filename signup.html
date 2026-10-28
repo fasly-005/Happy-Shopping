@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Happy Shopping | Sign Up</title>
+  <meta http-equiv="refresh" content="0;url=login.html?mode=signup" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -415,20 +416,7 @@
   </div>
 
   <script>
-    document.getElementById('signupForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-      const form = event.currentTarget;
-      const password = form.querySelectorAll('input[type="password"]')[0]?.value || '';
-      const confirm = form.querySelectorAll('input[type="password"]')[1]?.value || '';
-
-      if (password !== confirm) {
-        alert('Passwords do not match. Please try again.');
-        return;
-      }
-
-      alert('Account created successfully. Redirecting to the login page.');
-      window.location.href = 'index.html';
-    });
+    window.location.replace('login.html?mode=signup');
   </script>
 </body>
 </html>

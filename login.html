@@ -422,6 +422,7 @@
     }
 
     document.getElementById("toggleBtn").addEventListener("click", toggleForm);
+    if (new URLSearchParams(window.location.search).get("mode") === "signup") toggleForm();
 
     window.addEventListener("load", initializeGoogleSignIn);
     window.addEventListener("resize", initializeGoogleSignIn);
