@@ -3,41 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f7f5f1">
-    <title>Happy Shopping — Curated for Everyday</title>
+    <meta name="theme-color" content="#fffaf7">
+    <meta name="description" content="Happy Shopping — All add. Explore a considered collection of everyday finds.">
+    <title>Happy Shopping — All add</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             color-scheme: light;
-            --ink: #1e211f;
-            --muted: #737873;
-            --paper: #f7f5f1;
+            --ink: #33251f;
+            --muted: #76675f;
+            --paper: #fffaf7;
             --surface: #fff;
-            --accent: #bd5838;
-            --accent-dark: #99442b;
-            --line: rgba(30, 33, 31, .1);
-            --serif: Georgia, "Times New Roman", serif;
-            --sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            --accent: #ed6b2f;
+            --accent-dark: #bd4d21;
+            --peach: #ffe4d5;
+            --pink: #fbe4eb;
+            --gold: #c69b58;
+            --line: rgba(104, 72, 54, .12);
+            --serif: "Playfair Display", Georgia, "Times New Roman", serif;
+            --sans: "Poppins", "Segoe UI", Arial, sans-serif;
         }
 
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+        body::before, body::after { position: fixed; z-index: 0; width: 36rem; height: 36rem; border-radius: 50%; content: ""; pointer-events: none; filter: blur(90px); opacity: .38; animation: ambient-drift 20s ease-in-out infinite alternate; }
+        body::before { top: 12vh; left: -22rem; background: var(--peach); }
+        body::after { right: -24rem; bottom: 4vh; background: var(--pink); animation-delay: -8s; }
+        @keyframes ambient-drift { to { transform: translate3d(3rem, -2rem, 0) scale(1.12); } }
+        body > * { position: relative; z-index: 1; }
+        body::before, body::after { z-index: 0; }
+        main > section, footer { position: relative; }
+        main > section:not(.hero):not(.trust-strip) { isolation: isolate; }
+        main > section:not(.hero):not(.trust-strip)::before { position: absolute; z-index: -1; inset: 0; background: linear-gradient(115deg, rgba(255,228,213,.2), transparent 42%, rgba(251,228,235,.22)); content: ""; pointer-events: none; }
+        button, a, input { -webkit-tap-highlight-color: transparent; }
+        button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid rgba(237,107,47,.42); outline-offset: 3px; }
         button, input { font: inherit; }
         a { color: inherit; }
 
         header {
             position: sticky; top: 0; z-index: 100; min-height: 76px; padding: 0 clamp(20px, 6vw, 88px);
             display: flex; justify-content: space-between; align-items: center; gap: 24px;
-            background: rgba(247, 245, 241, .88); border-bottom: 1px solid rgba(30, 33, 31, .07);
+            background: rgba(255, 250, 247, .9); border-bottom: 1px solid var(--line);
             backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
         }
         .logo { color: var(--ink); font-size: 18px; font-weight: 700; letter-spacing: -.055em; white-space: nowrap; }
-        .logo-mark { display: inline-grid; place-items: center; width: 29px; height: 29px; margin-right: 8px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 13px; vertical-align: -2px; }
+        .logo-mark { display: inline-grid; place-items: center; width: 29px; height: 29px; margin-right: 8px; border-radius: 50%; background: linear-gradient(140deg, var(--accent), #f5a16e); color: #fff; font-size: 13px; vertical-align: -2px; box-shadow: 0 5px 16px rgba(237,107,47,.22); }
         .main-nav { display: flex; align-items: center; gap: clamp(18px, 3vw, 42px); }
         .main-nav a { color: #545a54; font-size: 13px; text-decoration: none; transition: color .2s ease; }
         .main-nav a:hover { color: var(--accent); }
-        .admin-btn { padding: 11px 17px; border: 1px solid var(--ink); border-radius: 3px; background: transparent; color: var(--ink); cursor: pointer; font-size: 12px; font-weight: 600; letter-spacing: .02em; transition: background .2s ease, color .2s ease; }
-        .admin-btn:hover { background: var(--ink); color: white; }
+        .admin-btn { padding: 11px 17px; border: 1px solid var(--accent); border-radius: 999px; background: transparent; color: var(--accent-dark); cursor: pointer; font-size: 12px; font-weight: 600; letter-spacing: .02em; transition: background .2s ease, color .2s ease, transform .2s ease; }
+        .admin-btn:hover { transform: translateY(-1px); background: var(--accent); color: white; }
 
         .hero {
             position: relative; isolation: isolate; overflow: hidden; min-height: 470px; padding: 92px 24px 86px;
@@ -77,18 +95,6 @@
         .modal-content { position: relative; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 30px; border-radius: 8px; background: #fff; box-shadow: 0 24px 80px rgba(0,0,0,.24); }
         .modal-content h2 { margin: 0 30px 18px 0; font-family: var(--serif); font-size: 27px; font-weight: 400; }
         .close-btn { position: absolute; top: 15px; right: 17px; color: #555; cursor: pointer; font-size: 24px; line-height: 1; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 11px 12px; border: 1px solid #dcded9; border-radius: 3px; background: #fff; font-size: 14px; }
-        .form-group input:focus { outline: 2px solid rgba(189,88,56,.2); border-color: var(--accent); }
-        .submit-btn { width: 100%; margin-top: 5px; padding: 12px; border: 0; border-radius: 3px; background: var(--accent); color: #fff; cursor: pointer; font-size: 13px; font-weight: 700; }
-        .submit-btn:hover { background: var(--accent-dark); }
-        .admin-controls { display: none; margin-top: 20px; }
-        .admin-section { margin-bottom: 20px; padding: 15px; border: 1px solid #eee; border-radius: 6px; background: #f8f9fa; }
-        .admin-section h3 { margin: 0 0 10px; color: var(--accent-dark); font-size: 15px; }
-        .admin-product-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: #fff; font-size: 13px; }
-        .delete-btn { padding: 6px 10px; border: 0; border-radius: 4px; background: #e53935; color: white; cursor: pointer; }
-
         /* Storefront enhancements */
         .store-header { min-height: 0; padding: 14px clamp(16px, 5vw, 72px) 0; display: grid; grid-template-columns: auto minmax(180px, 1fr) auto; gap: 20px; }
         .header-top { display: contents; }
@@ -110,34 +116,36 @@
         .ticker-track span { display: inline-flex; align-items: center; gap: 10px; color: rgba(255,255,255,.92); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
         .ticker-track span::before { width: 5px; height: 5px; border-radius: 50%; background: #f1a37f; content: ""; }
         @keyframes ticker-scroll { to { transform: translateX(-50%); } }
-        .hero { min-height: 490px; background: #285b4c; }
-        .hero::before { opacity: 1; background: radial-gradient(ellipse at 82% 18%, rgba(227,185,137,.2), transparent 25%), radial-gradient(ellipse at 15% 95%, rgba(255,255,255,.1), transparent 35%), linear-gradient(118deg, #285b4c, #1d473b 50%, #17392f); }
+        .hero { min-height: 540px; background: #f3b88f; }
+        .hero::before { opacity: 1; background: radial-gradient(ellipse at 82% 18%, rgba(255,255,255,.86), transparent 25%), radial-gradient(ellipse at 15% 95%, rgba(255,220,199,.8), transparent 35%), linear-gradient(118deg, #fff1e8, #f8d7ce 52%, #f8e5e9); animation: hero-glow 14s ease-in-out infinite alternate; }
+        @keyframes hero-glow { to { filter: hue-rotate(-8deg) saturate(1.08); } }
         .hero::after { width: 390px; height: 390px; top: 16%; right: 7%; border-color: rgba(255,255,255,.45); box-shadow: 0 0 0 35px rgba(255,255,255,.12), 0 0 0 78px rgba(255,255,255,.08); }
-        .hero-content { position: relative; z-index: 1; }
-        .hero .eyebrow { display: inline-flex; margin-bottom: 20px; padding: 9px 13px; border: 1px solid rgba(255,255,255,.55); border-radius: 99px; background: rgba(255,255,255,.17); color: #fff; backdrop-filter: blur(8px); }
-        .hero h1 { max-width: 820px; color: #fff; text-shadow: 0 2px 25px rgba(83,31,29,.12); }
-        .hero-content > p:not(.eyebrow) { color: rgba(255,255,255,.92); }
-        .hero-link { background: var(--accent); }
+        .hero-content { position: relative; z-index: 1; animation: hero-arrive .8s cubic-bezier(.2,.7,.2,1) both; }
+        @keyframes hero-arrive { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        .hero .eyebrow { display: inline-flex; margin-bottom: 20px; padding: 9px 13px; border: 1px solid rgba(198,155,88,.42); border-radius: 99px; background: rgba(255,255,255,.66); color: #785638; backdrop-filter: blur(8px); }
+        .hero h1 { max-width: 820px; color: #432d22; text-shadow: 0 2px 25px rgba(255,255,255,.3); }
+        .hero-content > p:not(.eyebrow) { color: #62483a; }
+        .hero-link { border-radius: 999px; background: var(--accent); box-shadow: 0 12px 26px rgba(189,77,33,.2); }
         .hero-link:hover { background: #fff; color: var(--ink); }
-        .trust-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border-bottom: 1px solid var(--line); background: #e9e5dd; }
+        .trust-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border-bottom: 1px solid var(--line); background: #f7e9e2; }
         .trust-item { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 22px 14px; background: var(--paper); }
-        .trust-icon { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #fff; color: var(--accent); }
+        .trust-icon { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: var(--pink); color: var(--accent-dark); }
         .trust-label { display: block; font-size: 12px; font-weight: 700; }
         .trust-detail { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
         .category-section { padding-top: 55px; padding-bottom: 0; }
         .category-heading { margin-bottom: 19px; font-family: var(--serif); font-size: 25px; font-weight: 400; letter-spacing: -.03em; }
         .category-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
-        .category-link { display: flex; min-height: 112px; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 14px 8px; border: 1px solid rgba(30,33,31,.07); border-radius: 6px; background: #fff; color: var(--ink); cursor: pointer; text-align: center; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
-        .category-link:hover, .category-link[aria-pressed="true"] { transform: translateY(-3px); border-color: rgba(189,88,56,.5); box-shadow: 0 10px 24px rgba(39,38,34,.08); }
-        .category-emoji { display: grid; width: 43px; height: 43px; place-items: center; border-radius: 50%; background: #f8eee8; font-size: 20px; }
+        .category-link { display: flex; min-height: 112px; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 14px 8px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.88); color: var(--ink); cursor: pointer; text-align: center; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+        .category-link:hover, .category-link[aria-pressed="true"] { transform: translateY(-3px); border-color: rgba(237,107,47,.5); box-shadow: 0 10px 24px rgba(113,64,39,.1); }
+        .category-emoji { display: grid; width: 43px; height: 43px; place-items: center; border-radius: 50%; background: linear-gradient(140deg, var(--peach), var(--pink)); color: var(--accent-dark); font-size: 20px; }
         .category-name { font-size: 11px; font-weight: 600; }
         .container { padding-top: 60px; }
         .collection-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: -10px 0 22px; }
         .result-count { margin: 0; color: var(--muted); font-size: 12px; }
         .clear-search { display: none; padding: 6px 0; border: 0; background: transparent; color: var(--accent-dark); cursor: pointer; font-size: 12px; text-decoration: underline; }
         .products-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 18px; }
-        .product-card { position: relative; border-radius: 7px; box-shadow: 0 2px 10px rgba(39,38,34,.035); }
-        .product-card:hover { box-shadow: 0 18px 38px rgba(39,38,34,.13); }
+        .product-card { position: relative; border-radius: 16px; box-shadow: 0 2px 10px rgba(89,58,39,.05); }
+        .product-card:hover { box-shadow: 0 18px 38px rgba(89,58,39,.14); }
         .product-media { position: relative; overflow: hidden; background: #e8e5de; }
         .product-img { aspect-ratio: 1 / 1.08; }
         .product-tag { position: absolute; top: 12px; left: 12px; z-index: 1; padding: 7px 9px; border-radius: 3px; background: rgba(255,255,255,.92); color: #565b55; font-size: 9px; font-weight: 700; letter-spacing: .1em; }
@@ -148,12 +156,40 @@
         .product-title { min-height: 36px; }
         .product-price { margin-bottom: 13px; }
         .store-card-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 9px; }
-        .add-cart-btn { display: inline-flex; min-height: 39px; align-items: center; justify-content: center; gap: 7px; padding: 8px 10px; border: 1px solid #dedbd4; border-radius: 4px; background: #fff; color: var(--ink); cursor: pointer; font-size: 11px; font-weight: 700; transition: background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease; }
-        .add-cart-btn:hover { border-color: var(--ink); background: var(--ink); color: white; }
+        .add-cart-btn { display: inline-flex; min-height: 39px; align-items: center; justify-content: center; gap: 7px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); cursor: pointer; font-size: 11px; font-weight: 700; transition: background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease; }
+        .add-cart-btn:hover { border-color: var(--accent); background: var(--accent); color: white; }
         .add-cart-btn:active { transform: scale(.97); }
-        .whatsapp-btn { border-radius: 4px; background: #1d8d62; }
+        .whatsapp-btn { border-radius: 999px; background: #1d8d62; }
         .whatsapp-btn:hover { background: #14744f; }
         .empty-state { grid-column: 1 / -1; padding: 45px 20px; border: 1px dashed #d8d4cd; border-radius: 6px; color: var(--muted); text-align: center; }
+        .story-section { padding-top: 22px; }
+        .story-card { max-width: 850px; margin: auto; padding: clamp(24px, 5vw, 48px); border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,.75); box-shadow: 0 18px 44px rgba(110,69,46,.06); }
+        .story-card p { color: var(--muted); line-height: 1.9; }
+        .offer-card, .community-card { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: clamp(24px, 5vw, 46px); border: 1px solid rgba(198,155,88,.28); border-radius: 24px; background: linear-gradient(120deg, rgba(255,228,213,.78), rgba(251,228,235,.72), rgba(255,255,255,.9)); }
+        .offer-card h2, .community-card h2 { margin: 0 0 10px; font-family: var(--serif); font-size: clamp(28px, 4vw, 40px); font-weight: 500; }
+        .offer-card p, .community-card p { max-width: 620px; margin: 0; color: var(--muted); line-height: 1.8; }
+        .trust-grid, .contact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+        .trust-card, .contact-card { padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.82); }
+        .trust-card strong, .contact-card strong { display: block; margin-bottom: 8px; color: var(--accent-dark); }
+        .trust-card p, .contact-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75; overflow-wrap: anywhere; }
+        .testimonials-empty { padding: 25px; border: 1px dashed rgba(198,155,88,.5); border-radius: 18px; color: var(--muted); text-align: center; }
+        .tracking-form { display: flex; gap: 10px; max-width: 600px; margin-top: 22px; }
+        .tracking-form input { flex: 1; min-width: 0; padding: 13px 15px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); }
+        .tracking-state { margin: 14px 0 0; color: var(--accent-dark); font-size: 13px; }
+        .section-cta { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: 0 20px; border: 0; border-radius: 999px; background: var(--accent); color: white; cursor: pointer; font-size: 12px; font-weight: 700; text-decoration: none; transition: transform .2s, box-shadow .2s; }
+        .section-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(189,77,33,.2); }
+        .footer-links { display: flex; flex-wrap: wrap; gap: 18px; }
+        .footer-links a { color: rgba(255,255,255,.8); font-size: 12px; text-decoration: none; }
+        .footer-links a:hover { color: #ffd9bf; }
+        .back-to-top { position: fixed; right: 20px; bottom: 20px; z-index: 100; display: grid; width: 44px; height: 44px; place-items: center; border: 1px solid rgba(198,155,88,.36); border-radius: 50%; background: rgba(255,255,255,.92); color: var(--accent-dark); box-shadow: 0 8px 24px rgba(72,45,30,.14); opacity: 0; pointer-events: none; transform: translateY(10px); transition: opacity .2s, transform .2s; }
+        .back-to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s cubic-bezier(.2,.7,.2,1); }
+        .reveal.is-visible { opacity: 1; transform: translateY(0); }
+        .promo-ticker { background: #fff0e7; color: var(--ink); }
+        .ticker-track span { color: #684636; }
+        .ticker-track span::before { background: var(--gold); }
+        .store-footer { flex-wrap: wrap; background: #633d2c; }
+        .drawer-checkout[aria-disabled="true"] { background: #b7bcb8; }
         .drawer-backdrop { position: fixed; inset: 0; z-index: 1090; visibility: hidden; background: rgba(19,22,20,.48); opacity: 0; transition: opacity .25s ease, visibility .25s ease; }
         .drawer-backdrop.is-open { visibility: visible; opacity: 1; }
         .store-drawer { position: fixed; top: 0; right: 0; z-index: 1100; display: flex; width: min(430px, 100%); height: 100dvh; flex-direction: column; padding: 24px; background: #fff; box-shadow: -15px 0 50px rgba(0,0,0,.15); transform: translateX(102%); transition: transform .3s cubic-bezier(.2,.7,.2,1); }
@@ -210,6 +246,10 @@
             .add-cart-btn { min-height: 36px; padding: 7px 4px; font-size: 10px; }
             .whatsapp-btn { padding: 11px 6px; font-size: 9px; letter-spacing: .05em; }
             .store-footer { align-items: flex-start; flex-direction: column; padding: 25px 20px; }
+            .offer-card, .community-card { align-items: flex-start; flex-direction: column; }
+            .trust-grid, .contact-grid { grid-template-columns: 1fr; }
+            .tracking-form { align-items: stretch; flex-direction: column; }
+            .tracking-form .section-cta { width: 100%; }
             .modal-content { padding: 24px 19px; }
         }
         @media (max-width: 440px) {
@@ -230,6 +270,7 @@
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
             .ticker-track { animation: none; }
+            .reveal { opacity: 1; transform: none; }
         }
     </style>
 </head>
@@ -248,50 +289,59 @@
             <button class="header-action" id="cartOpen" type="button" aria-label="Open shopping bag">
                 <span aria-hidden="true">▱</span><span class="action-label">Bag</span><span class="action-count" id="cartCount" aria-live="polite">0</span>
             </button>
+            <button class="admin-btn" id="accountAction" type="button">Sign in</button>
             <button class="admin-btn" onclick="openAdminModal()">Admin</button>
         </div>
         <nav class="main-nav" aria-label="Main navigation">
             <a href="#home">Home</a>
-            <a href="product.html">Shop</a>
+            <a href="#products">Shop</a>
             <a href="#categories">Categories</a>
             <a href="#products">All products</a>
-            <a href="cart.html">Cart</a>
-            <a href="login.html">Sign in</a>
+            <a href="#community">Community</a>
+            <a href="#contact">Contact</a>
         </nav>
     </header>
 
     <div class="promo-ticker" aria-label="Store highlights">
         <div class="ticker-track" aria-hidden="true">
-            <span>Discover your next favorite</span><span>Easy ordering on WhatsApp</span><span>Thoughtful picks for everyday</span><span>Discover your next favorite</span><span>Easy ordering on WhatsApp</span><span>Thoughtful picks for everyday</span>
+            <span>Happy Shopping · All add</span><span>Considered finds for everyday</span><span>Made for your everyday edit</span><span>Happy Shopping · All add</span><span>Considered finds for everyday</span><span>Made for your everyday edit</span>
         </div>
     </div>
 
     <main>
         <section class="hero" id="heroBanner">
             <div class="hero-content" id="home">
-                <p class="eyebrow">The Happy Shopping edit</p>
-                <h1 id="bannerTitle">Shop Smarter. Live Brighter.</h1>
-                <p id="bannerSubtitle">Discover premium fashion, home upgrades, and daily essentials.</p>
+                <p class="eyebrow">Happy Shopping · All add</p>
+                <h1 id="bannerTitle">A little lovely, a lot more you.</h1>
+                <p id="bannerSubtitle">Discover a considered edit of everyday finds, ready to make your own.</p>
                 <a class="hero-link" href="#products">Find your next favorite <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <section class="container story-section reveal" id="about" aria-labelledby="aboutHeading">
+            <div class="story-card">
+                <p class="section-kicker">Our point of view</p>
+                <h2 class="section-title" id="aboutHeading">A happier way to find your everyday.</h2>
+                <p>Happy Shopping is a place to explore thoughtful finds for everyday life. Browse the collection, save what you love, and build a bag at your own pace. Product details and availability will appear here as the store catalog is connected.</p>
             </div>
         </section>
 
         <section class="trust-strip" aria-label="Shopping information">
             <div class="trust-item">
-                <span class="trust-icon" aria-hidden="true">↗</span>
-                <span><span class="trust-label">Delivery support</span><span class="trust-detail">Ask us about your order</span></span>
-            </div>
-            <div class="trust-item">
-                <span class="trust-icon" aria-hidden="true">✓</span>
-                <span><span class="trust-label">Order with confidence</span><span class="trust-detail">Chat directly with our team</span></span>
+                <span class="trust-icon" aria-hidden="true">✦</span>
+                <span><span class="trust-label">Thoughtful finds</span><span class="trust-detail">An edit for everyday living</span></span>
             </div>
             <div class="trust-item">
                 <span class="trust-icon" aria-hidden="true">♡</span>
-                <span><span class="trust-label">Personal support</span><span class="trust-detail">We’re happy to help</span></span>
+                <span><span class="trust-label">Made personal</span><span class="trust-detail">Save the pieces you love</span></span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon" aria-hidden="true">↗</span>
+                <span><span class="trust-label">Here to help</span><span class="trust-detail">Store contact details coming soon</span></span>
             </div>
         </section>
 
-        <section class="container category-section" id="categories" aria-labelledby="categoryHeading">
+        <section class="container category-section reveal" id="categories" aria-labelledby="categoryHeading">
             <h2 class="category-heading" id="categoryHeading">Shop by category</h2>
             <div class="category-grid" id="categoryGrid">
                 <button class="category-link" type="button" data-category="all" aria-pressed="true"><span class="category-emoji" aria-hidden="true">✦</span><span class="category-name">Everything</span></button>
@@ -303,7 +353,7 @@
             </div>
         </section>
 
-        <section class="container" id="products">
+        <section class="container reveal" id="products">
             <div class="section-heading">
                 <div>
                     <p class="section-kicker">The edit</p>
@@ -317,12 +367,81 @@
             </div>
             <div class="products-grid" id="productsGrid"></div>
         </section>
+
+        <section class="container reveal" id="offers" aria-labelledby="offersHeading">
+            <div class="offer-card">
+                <div>
+                    <p class="section-kicker">Special offers</p>
+                    <h2 id="offersHeading">A little something, when it’s ready.</h2>
+                    <p>There are no active offers to show right now. Store promotions will appear here when they are configured.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container reveal" id="community" aria-labelledby="communityHeading">
+            <div class="community-card">
+                <div>
+                    <p class="section-kicker">Shopping community</p>
+                    <h2 id="communityHeading">Find your people. Share the good stuff.</h2>
+                    <p>The Happy Shopping WhatsApp community invite has not been configured yet. We’ll add the official link here when it is available.</p>
+                </div>
+                <button class="section-cta" id="communityLink" type="button" disabled aria-disabled="true">Invite link coming soon</button>
+            </div>
+        </section>
+
+        <section class="container reveal" id="why-us" aria-labelledby="whyHeading">
+            <div class="section-heading">
+                <div><p class="section-kicker">The Happy Shopping difference</p><h2 class="section-title" id="whyHeading">A considered experience, at every step.</h2></div>
+            </div>
+            <div class="trust-grid">
+                <article class="trust-card"><strong>Easy to explore</strong><p>Browse by category, find what you’re looking for, and keep your favourites close.</p></article>
+                <article class="trust-card"><strong>Clear product details</strong><p>We’ll show verified product, price, and availability information as the store catalog is connected.</p></article>
+                <article class="trust-card"><strong>Help when you need it</strong><p>Official delivery and support information will be added when the store contact details are configured.</p></article>
+            </div>
+        </section>
+
+        <section class="container reveal" id="stories" aria-labelledby="storiesHeading">
+            <div class="section-heading">
+                <div><p class="section-kicker">Customer stories</p><h2 class="section-title" id="storiesHeading">Your words, when you’re ready.</h2></div>
+            </div>
+            <div class="testimonials-empty">Customer reviews will appear here once verified reviews are connected. No sample ratings are shown.</div>
+        </section>
+
+        <section class="container reveal" id="contact" aria-labelledby="contactHeading">
+            <div class="section-heading">
+                <div><p class="section-kicker">Get in touch</p><h2 class="section-title" id="contactHeading">We’d love to hear from you.</h2></div>
+            </div>
+            <div class="contact-grid">
+                <article class="contact-card"><strong>Customer care</strong><p>Contact details will be added once the official store support channel is configured.</p></article>
+                <article class="contact-card"><strong>Delivery questions</strong><p>Verified delivery areas, fees, and timelines will be published when available.</p></article>
+                <article class="contact-card"><strong>Social updates</strong><p>Official Happy Shopping social links will appear here when provided.</p></article>
+            </div>
+        </section>
+
+        <section class="container reveal" id="tracking" aria-labelledby="trackingHeading">
+            <div class="story-card">
+                <p class="section-kicker">Order updates</p>
+                <h2 class="section-title" id="trackingHeading">Follow your order.</h2>
+                <p>Order tracking will be available after the secure Firebase order service is configured. This page does not currently receive or store customer orders.</p>
+                <form class="tracking-form" id="trackingForm">
+                    <label class="sr-only" for="trackingOrderId">Order ID</label>
+                    <input id="trackingOrderId" name="orderId" type="text" placeholder="Order ID" autocomplete="off" disabled>
+                    <button class="section-cta" type="submit" disabled>Tracking coming soon</button>
+                </form>
+                <p class="tracking-state" id="trackingState" role="status" aria-live="polite">Firebase order and tracking services are not configured yet.</p>
+            </div>
+        </section>
     </main>
 
     <footer class="store-footer">
-        <div class="footer-brand">Happy Shopping</div>
-        <p class="footer-copy">A little more considered, every day. © 2026 Happy Shopping.</p>
+        <div class="footer-brand">Happy Shopping <span aria-hidden="true">·</span> All add</div>
+        <nav class="footer-links" aria-label="Footer navigation">
+            <a href="#about">About</a><a href="#categories">Categories</a><a href="#offers">Offers</a><a href="#community">Community</a><a href="#tracking">Order updates</a><a href="#contact">Contact</a>
+        </nav>
+        <p class="footer-copy">© <span id="currentYear"></span> Happy Shopping. All add.</p>
     </footer>
+
+    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button>
 
     <div class="drawer-backdrop" id="drawerBackdrop"></div>
     <aside class="store-drawer" id="storeDrawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true" inert>
@@ -337,198 +456,98 @@
         <div class="drawer-items" id="drawerItems"></div>
         <div class="drawer-footer" id="drawerFooter">
             <a class="drawer-checkout" id="drawerCheckout" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true">Continue on WhatsApp</a>
-            <p class="drawer-note">Your order will be confirmed with our team on WhatsApp.</p>
+            <p class="drawer-note">Checkout will be enabled once the official store contact and secure order service are configured.</p>
         </div>
     </aside>
 
     <div class="modal" id="adminModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeAdminModal()">&times;</span>
-            
-            <div id="loginSection">
-                <h2>Admin Login</h2>
-                <div class="form-group" style="margin-top: 15px;">
-                    <label>Username</label>
-                    <input type="text" id="username" placeholder="admin">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" placeholder="admin123">
-                </div>
-                <button class="submit-btn" onclick="handleLogin()">Login to Dashboard</button>
-            </div>
-
-            <div id="dashboardSection" class="admin-controls">
-                <h2>Store Admin Settings</h2>
-                
-                <div class="admin-section">
-                    <h3>1. Edit Banner Text</h3>
-                    <div class="form-group">
-                        <label>Main Title</label>
-                        <input type="text" id="editBannerTitle">
-                    </div>
-                    <div class="form-group">
-                        <label>Subtitle</label>
-                        <input type="text" id="editBannerSubtitle">
-                    </div>
-                    <button class="submit-btn" style="background:#333;" onclick="updateBanner()">Update Banner</button>
-                </div>
-
-                <div class="admin-section">
-                    <h3>2. WhatsApp Number</h3>
-                    <div class="form-group">
-                        <label>Number (e.g. 94770000000)</label>
-                        <input type="text" id="editStorePhone">
-                    </div>
-                    <button class="submit-btn" style="background:#333;" onclick="updatePhone()">Save Number</button>
-                </div>
-
-                <div class="admin-section">
-                    <h3>3. Add Product (Choose from Gallery)</h3>
-                    <div class="form-group">
-                        <label>Product Name</label>
-                        <input type="text" id="pName" placeholder="Product Title">
-                    </div>
-                    <div class="form-group">
-                        <label>Price (LKR)</label>
-                        <input type="text" id="pPrice" placeholder="LKR 3,500">
-                    </div>
-                    <div class="form-group">
-                        <label>Select Product Image (Gallery)</label>
-                        <input type="file" id="pImgFile" accept="image/*">
-                    </div>
-                    <button class="submit-btn" onclick="addProduct()">Upload Product</button>
-                </div>
-
-                <div class="admin-section">
-                    <h3>4. Manage Products</h3>
-                    <div id="adminProductList"></div>
-                </div>
-            </div>
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+            <button class="close-btn" type="button" onclick="closeAdminModal()" aria-label="Close admin setup">×</button>
+            <p class="section-kicker">Store administration</p>
+            <h2 id="adminModalTitle">Secure admin access is being prepared.</h2>
+            <p class="demo-notice">The previous browser-only admin password and local product editor have been removed. Store editing and order management require a trusted Firebase administrator role and server-side services.</p>
+            <p class="demo-notice" id="firebaseSetupStatus"><strong>Setup status:</strong> Firebase web app configuration is incomplete. Authentication and the live catalog are not connected.</p>
+            <p class="demo-notice" id="adminRoleStatus">Admin access requires a server-granted Firebase custom claim; an email address alone does not grant access.</p>
+            <p class="demo-notice"><a href="login.html">Sign in or create a customer account</a> · See <a href="FIREBASE_SETUP.md">Firebase setup instructions</a>.</p>
         </div>
     </div>
 
     <script>
-        let storeConfig = JSON.parse(localStorage.getItem('hs_config')) || {
-            bannerTitle: "Shop Smarter. Live Brighter.",
-            bannerSubtitle: "Discover premium fashion, home upgrades, and daily essentials.",
-            phone: "94770000000"
+        const storeConfig = {
+            bannerTitle: "A little lovely, a lot more you.",
+            bannerSubtitle: "Discover a considered edit of everyday finds, ready to make your own."
         };
-
-        let products = JSON.parse(localStorage.getItem('hs_products')) || [
-            {
-                name: "Casual Cotton T-Shirt",
-                price: "LKR 2,500",
-                img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500"
-            }
-        ];
-
-        function saveData() {
-            localStorage.setItem('hs_config', JSON.stringify(storeConfig));
-            localStorage.setItem('hs_products', JSON.stringify(products));
-            renderAll();
-        }
+        let products = [];
+        let catalogMessage = 'Connecting to the Firebase product catalog…';
 
         function renderAll() {
             document.getElementById('bannerTitle').innerText = storeConfig.bannerTitle;
             document.getElementById('bannerSubtitle').innerText = storeConfig.bannerSubtitle;
-            document.getElementById('editBannerTitle').value = storeConfig.bannerTitle;
-            document.getElementById('editBannerSubtitle').value = storeConfig.bannerSubtitle;
-            document.getElementById('editStorePhone').value = storeConfig.phone;
 
             const grid = document.getElementById('productsGrid');
-            grid.innerHTML = '';
+            grid.replaceChildren();
             products.forEach((p) => {
-                let msg = encodeURIComponent(`Hi, I want to order ${p.name} (${p.price}) from Happy Shopping.`);
-                grid.innerHTML += `
-                    <div class="product-card">
-                        <img src="${p.img}" class="product-img" alt="${p.name}">
-                        <div class="product-info">
-                            <div class="product-title">${p.name}</div>
-                            <div class="product-price">${p.price}</div>
-                            <a href="https://wa.me/${storeConfig.phone}?text=${msg}" target="_blank" class="whatsapp-btn">Order on WhatsApp</a>
-                        </div>
-                    </div>
-                `;
+                const card = document.createElement('article');
+                card.className = 'product-card';
+                if (p.category) card.dataset.storeCategory = p.category;
+                const image = document.createElement('img');
+                if (p.img) image.src = p.img;
+                image.className = 'product-img';
+                image.alt = p.name;
+                image.loading = 'lazy';
+                const info = document.createElement('div');
+                info.className = 'product-info';
+                const title = document.createElement('div');
+                title.className = 'product-title';
+                title.textContent = p.name;
+                const price = document.createElement('div');
+                price.className = 'product-price';
+                price.textContent = p.price;
+                info.append(title, price);
+                card.append(image, info);
+                grid.appendChild(card);
             });
 
-            const list = document.getElementById('adminProductList');
-            list.innerHTML = '';
-            products.forEach((p, index) => {
-                list.innerHTML += `
-                    <div class="admin-product-row">
-                        <span>${p.name} - ${p.price}</span>
-                        <button class="delete-btn" onclick="deleteProduct(${index})">Delete</button>
-                    </div>
-                `;
-            });
+            document.getElementById('resultCount').textContent = products.length
+                ? `Showing ${products.length} ${products.length === 1 ? 'item' : 'items'}`
+                : catalogMessage;
         }
 
-        function openAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
-        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+        window.setFirebaseCatalog = (items, message) => {
+            products = items;
+            catalogMessage = message;
+            renderAll();
+        };
 
-        function handleLogin() {
-            let u = document.getElementById('username').value.trim();
-            let p = document.getElementById('password').value.trim();
-            if(u === 'admin' && p === 'admin123') {
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardSection').style.display = 'block';
-            } else {
-                alert('Incorrect credentials! Use small letters: admin / admin123');
+        let adminTrigger = null;
+        function openAdminModal() {
+            adminTrigger = document.activeElement;
+            const modal = document.getElementById('adminModal');
+            modal.style.display = 'flex';
+            modal.querySelector('.close-btn').focus();
+        }
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            if (adminTrigger?.isConnected) adminTrigger.focus();
+        }
+
+        document.getElementById('adminModal').addEventListener('click', (event) => {
+            if (event.target === event.currentTarget) closeAdminModal();
+        });
+        document.addEventListener('keydown', (event) => {
+            const modal = document.getElementById('adminModal');
+            if (modal.style.display !== 'flex') return;
+            if (event.key === 'Escape') closeAdminModal();
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                modal.querySelector('.close-btn').focus();
             }
-        }
-
-        function updateBanner() {
-            storeConfig.bannerTitle = document.getElementById('editBannerTitle').value;
-            storeConfig.bannerSubtitle = document.getElementById('editBannerSubtitle').value;
-            saveData();
-            alert('Banner updated successfully!');
-        }
-
-        function updatePhone() {
-            storeConfig.phone = document.getElementById('editStorePhone').value;
-            saveData();
-            alert('WhatsApp number updated!');
-        }
-
-        function addProduct() {
-            let name = document.getElementById('pName').value;
-            let price = document.getElementById('pPrice').value;
-            let fileInput = document.getElementById('pImgFile');
-
-            if(!name || !price || fileInput.files.length === 0) {
-                alert('Ella fields-ayum fill panni image select pannunga!');
-                return;
-            }
-
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                products.push({ name, price, img: e.target.result });
-                saveData();
-                document.getElementById('pName').value = '';
-                document.getElementById('pPrice').value = '';
-                fileInput.value = '';
-                alert('Product uploaded successfully!');
-            };
-            reader.readAsDataURL(fileInput.files[0]);
-        }
-
-        function deleteProduct(index) {
-            if(confirm('Delete this product?')) {
-                products.splice(index, 1);
-                saveData();
-            }
-        }
+        });
 
         renderAll();
-
-        const adminLoginComplete = new URLSearchParams(window.location.search).get('admin') === '1'
-            && sessionStorage.getItem('hs_admin_authenticated') === 'true';
-        if (adminLoginComplete) {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('dashboardSection').style.display = 'block';
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        if (new URLSearchParams(window.location.search).get('admin') === '1') {
             openAdminModal();
-            window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
         }
     </script>
     <script>
@@ -587,7 +606,7 @@
 
             function enhanceCard(card) {
                 const data = getCardData(card);
-                card.dataset.storeCategory = getCategory(data.name);
+                card.dataset.storeCategory = card.dataset.storeCategory || getCategory(data.name);
 
                 let media = card.querySelector('.product-media');
                 if (!media) {
@@ -653,7 +672,7 @@
 
                 const resultCount = document.getElementById('resultCount');
                 resultCount.textContent = cards.length === 0
-                    ? 'New finds are on their way.'
+                    ? catalogMessage
                     : `Showing ${visible} of ${cards.length} ${cards.length === 1 ? 'item' : 'items'}`;
 
                 let emptyState = grid.querySelector('.empty-state');
@@ -664,7 +683,7 @@
                         grid.appendChild(emptyState);
                     }
                     emptyState.textContent = cards.length === 0
-                        ? 'There are no products in the collection just yet.'
+                        ? catalogMessage
                         : 'No products match those filters. Try another search or category.';
                 } else if (emptyState) {
                     emptyState.remove();
@@ -882,6 +901,124 @@
             new MutationObserver(syncCards).observe(grid, { childList: true, subtree: true });
             syncCards();
         })();
+    </script>
+    <script type="module">
+        import { onAuthStateChanged, signOut, getIdTokenResult } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+        import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+        import { adminEmail, auth, db, isFirebaseConfigured } from "./firebase-config.js";
+
+        const accountAction = document.getElementById("accountAction");
+        const setupStatus = document.getElementById("firebaseSetupStatus");
+        const adminRoleStatus = document.getElementById("adminRoleStatus");
+        const currency = new Intl.NumberFormat("en-LK", {
+            style: "currency",
+            currency: "LKR",
+            maximumFractionDigits: 2
+        });
+
+        function setCatalog(items, message) {
+            window.setFirebaseCatalog(items, message);
+        }
+
+        accountAction.addEventListener("click", async () => {
+            if (!auth || !auth.currentUser) {
+                window.location.href = "login.html";
+                return;
+            }
+            try {
+                await signOut(auth);
+                accountAction.textContent = "Sign in";
+            } catch (error) {
+                console.error("Firebase sign-out failed.", error);
+                setupStatus.textContent = "Unable to sign out. Check your connection and try again.";
+            }
+        });
+
+        if (!isFirebaseConfigured || !auth || !db) {
+            setupStatus.textContent = "Firebase web app configuration is incomplete. Authentication and the live catalog are not connected.";
+            adminRoleStatus.textContent = "Admin access requires a server-granted Firebase custom claim; an email address alone does not grant access.";
+            setCatalog([], "Add the Firebase web app configuration to connect the product catalog.");
+        } else {
+            setupStatus.textContent = "Firebase is configured. Sign-in and the live catalog will connect when Authentication, Firestore, and their rules are enabled.";
+            onSnapshot(collection(db, "products"), (snapshot) => {
+                const catalog = [];
+                let invalidProducts = 0;
+                snapshot.forEach((productDocument) => {
+                    const product = productDocument.data();
+                    if (product.published !== true
+                        || typeof product.name !== "string"
+                        || !product.name.trim()
+                        || typeof product.price !== "number"
+                        || !Number.isFinite(product.price)
+                        || product.price < 0) {
+                        invalidProducts += 1;
+                        return;
+                    }
+
+                    const candidateImage = typeof product.imageUrl === "string"
+                        ? product.imageUrl
+                        : (typeof product.image === "string" ? product.image : "");
+                    let image = "";
+                    if (candidateImage) {
+                        try {
+                            const parsedImage = new URL(candidateImage, window.location.href);
+                            if (parsedImage.protocol === "https:" || parsedImage.protocol === "http:") {
+                                image = parsedImage.href;
+                            }
+                        } catch {
+                            image = "";
+                        }
+                    }
+
+                    const validCategories = ["apparel", "home", "beauty", "electronics", "other"];
+                    const category = typeof product.category === "string"
+                        && validCategories.includes(product.category.toLowerCase())
+                        ? product.category.toLowerCase()
+                        : "";
+                    catalog.push({
+                        name: product.name.trim(),
+                        price: currency.format(product.price),
+                        img: image,
+                        category
+                    });
+                });
+                const message = catalog.length
+                    ? (invalidProducts
+                        ? `${invalidProducts} unpublished or incomplete catalog item(s) were skipped.`
+                        : `Showing ${catalog.length} ${catalog.length === 1 ? "item" : "items"}`)
+                    : (snapshot.empty
+                        ? "No published products yet. Add published product documents to the Firestore products collection."
+                        : "No catalog items are ready to display. Check each product's published flag, name, and numeric price.");
+                setCatalog(catalog, message);
+            }, (error) => {
+                console.error("Firebase product catalog could not be loaded.", error);
+                setCatalog([], "Unable to load products from Firebase. Check Firestore setup, access rules, and your connection.");
+            });
+
+            onAuthStateChanged(auth, async (user) => {
+                accountAction.textContent = user ? "Sign out" : "Sign in";
+                accountAction.setAttribute("aria-label", user ? `Sign out ${user.email || "of your account"}` : "Sign in");
+                if (!user) {
+                    adminRoleStatus.textContent = `Admin access is reserved for ${adminEmail} and requires a server-granted Firebase custom claim.`;
+                    return;
+                }
+
+                try {
+                    const token = await getIdTokenResult(user);
+                    const hasAdminRole = token.claims.admin === true
+                        && user.email?.toLowerCase() === adminEmail.toLowerCase();
+                    adminRoleStatus.textContent = hasAdminRole
+                        ? "The designated account has a server-granted admin role. Admin editing and order tools still require their trusted backend services."
+                        : `Signed in as ${user.email || "a customer"}. Admin tools require the designated ${adminEmail} account and a server-granted role.`;
+                } catch (error) {
+                    console.error("Firebase administrator role could not be checked.", error);
+                    adminRoleStatus.textContent = "Unable to verify the administrator role. Admin actions remain unavailable.";
+                }
+            }, (error) => {
+                console.error("Firebase authentication state could not be read.", error);
+                setupStatus.textContent = "Firebase Authentication could not be reached. Check the project configuration and authorized domain.";
+            });
+        }
     </script>
 </body>
 </html>

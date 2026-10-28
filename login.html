@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f7f5f1">
     <title>Happy Shopping — Premium Login</title>
-    <meta name="google-auth-endpoint" content="https://happyshopping.netlify.app/.netlify/functions/auth-google">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             color-scheme: light;
@@ -247,7 +245,7 @@
             </div>
 
             <div class="input-group">
-                <input type="text" id="username" placeholder="Username or Email" autocomplete="username" required>
+                <input type="email" id="username" placeholder="Email address" autocomplete="email" required>
             </div>
 
             <div class="input-group">
@@ -257,7 +255,7 @@
             <button type="submit" class="btn-primary" id="submitBtn">Sign in</button>
         </form>
         <div class="divider" id="authDivider" aria-hidden="true">or continue with</div>
-        <div class="google-btn" id="googleSignInButton" aria-label="Continue with Google">
+        <button type="button" class="google-btn" id="googleSignInButton" aria-label="Continue with Google">
             <svg class="google-mark" viewBox="0 0 48 48" aria-hidden="true">
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                 <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.27 5.48-4.78 7.18l7.73 6C44.4 37.93 46.98 31.7 46.98 24.55z"/>
@@ -265,9 +263,9 @@
                 <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.89 2.3-8.17 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             </svg>
             Continue with Google
-        </div>
+        </button>
         <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
-        <p class="demo-note">Demo accounts are saved in this browser only. This static page does not provide production-grade account security.</p>
+        <p class="demo-note">Accounts are secured by Firebase Authentication. Use the same email address you use for your store account.</p>
 
         <button type="button" class="btn-secondary" id="toggleBtn">
             Create an account
@@ -285,108 +283,33 @@
 
 </div>
 
-<script>
+<script type="module">
+    import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { auth, isFirebaseConfigured } from "./firebase-config.js";
+
     let isSignup = false;
     const authForm = document.getElementById("authForm");
     const nameInput = document.getElementById("fullname");
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
     const authMessage = document.getElementById("authMessage");
-    const usersStorageKey = "hs_users";
-    const googleClientId = "209124503371-r2t0tmre4dut128bhru63nhgjh6s071n.apps.googleusercontent.com";
-    const googleVerificationEndpoint = document.querySelector('meta[name="google-auth-endpoint"]').content.trim();
-    let googleSignInReady = false;
-
     function showMessage(message, isError = true) {
         authMessage.textContent = message;
         authMessage.classList.toggle("is-error", isError && Boolean(message));
         authMessage.classList.toggle("is-success", !isError && Boolean(message));
     }
 
-    function readUsers() {
-        const storedUsers = localStorage.getItem(usersStorageKey);
-        if (!storedUsers) return [];
-
-        const users = JSON.parse(storedUsers);
-        if (!Array.isArray(users)) throw new Error("Saved account data is invalid.");
-        return users;
-    }
-
-    async function hashPassword(password, salt) {
-        if (!window.crypto?.subtle) throw new Error("Secure password hashing is unavailable in this browser. Open the site using localhost or HTTPS.");
-        const encoder = new TextEncoder();
-        const key = await window.crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
-        const bits = await window.crypto.subtle.deriveBits({
-            name: "PBKDF2",
-            salt: Uint8Array.from(atob(salt), (character) => character.charCodeAt(0)),
-            iterations: 150000,
-            hash: "SHA-256"
-        }, key, 256);
-        return Array.from(new Uint8Array(bits), (byte) => byte.toString(16).padStart(2, "0")).join("");
-    }
-
-    function createSalt() {
-        const bytes = window.crypto.getRandomValues(new Uint8Array(16));
-        return btoa(String.fromCharCode(...bytes));
-    }
-
-    async function handleGoogleCredential(response) {
-        if (!response.credential) {
-            showMessage("Google did not return a sign-in credential. Please try again.");
-            return;
-        }
-
-        try {
-            if (!googleVerificationEndpoint) {
-                throw new Error("Google account selection is ready, but secure sign-in verification needs your server endpoint. Set the google-auth-endpoint meta value after configuring the backend.");
-            }
-
-            const verificationUrl = new URL(googleVerificationEndpoint, window.location.href);
-            const verificationResponse = await fetch(verificationUrl, {
-                method: "POST",
-                headers: { Accept: "application/json", "Content-Type": "application/json" },
-                body: JSON.stringify({ credential: response.credential })
-            });
-            if (!verificationResponse.ok) {
-                throw new Error("Google sign-in could not be verified. Please try again.");
-            }
-
-            const account = await verificationResponse.json();
-            if (!account || typeof account.name !== "string" || typeof account.email !== "string") {
-                throw new Error("Google sign-in verification returned invalid account details.");
-            }
-
-            sessionStorage.setItem("hs_current_user", JSON.stringify({
-                name: account.name,
-                username: account.email,
-                picture: typeof account.picture === "string" ? account.picture : "",
-                provider: "google"
-            }));
-            window.location.href = "index.html";
-        } catch (error) {
-            showMessage(error instanceof Error ? error.message : "Unable to complete Google sign-in.");
-        }
-    }
-
-    function initializeGoogleSignIn() {
-        const googleButton = document.getElementById("googleSignInButton");
-        if (googleSignInReady || !window.google?.accounts?.id || !googleButton.clientWidth) return;
-        window.google.accounts.id.initialize({
-            client_id: googleClientId,
-            callback: handleGoogleCredential,
-            ux_mode: "popup",
-            auto_select: false
-        });
-        window.google.accounts.id.renderButton(googleButton, {
-            type: "standard",
-            theme: "outline",
-            size: "large",
-            text: "continue_with",
-            shape: "rectangular",
-            logo_alignment: "left",
-            width: Math.min(400, Math.floor(googleButton.clientWidth))
-        });
-        googleSignInReady = true;
+    function authErrorMessage(error) {
+        const messages = {
+            "auth/email-already-in-use": "An account with this email already exists. Sign in instead.",
+            "auth/invalid-email": "Enter a valid email address.",
+            "auth/invalid-credential": "Email or password is incorrect.",
+            "auth/weak-password": "Choose a stronger password with at least 6 characters.",
+            "auth/popup-blocked": "Your browser blocked the Google sign-in window. Allow popups and try again.",
+            "auth/popup-closed-by-user": "Google sign-in was cancelled.",
+            "auth/network-request-failed": "Network error. Check your connection and try again."
+        };
+        return messages[error.code] || "Firebase sign-in could not be completed. Check your connection and Firebase setup, then try again.";
     }
 
     function toggleForm() {
@@ -424,15 +347,18 @@
     document.getElementById("toggleBtn").addEventListener("click", toggleForm);
     if (new URLSearchParams(window.location.search).get("mode") === "signup") toggleForm();
 
-    window.addEventListener("load", initializeGoogleSignIn);
-    window.addEventListener("resize", initializeGoogleSignIn);
-
     authForm.addEventListener("submit", async function(event) {
         event.preventDefault();
-        const username = usernameInput.value.trim();
-        const normalizedUsername = username.toLocaleLowerCase();
+        const email = usernameInput.value.trim();
         const password = passwordInput.value;
 
+        if (!isFirebaseConfigured || !auth) {
+            showMessage("Firebase setup is incomplete. Add your Firebase web app configuration, enable Authentication, and try again.");
+            return;
+        }
+
+        const submitButton = document.getElementById("submitBtn");
+        submitButton.disabled = true;
         try {
             if (isSignup) {
                 const name = nameInput.value.trim();
@@ -441,54 +367,47 @@
                     nameInput.focus();
                     return;
                 }
-                if (password.length < 8) {
-                    showMessage("Choose a password with at least 8 characters.");
-                    passwordInput.focus();
-                    return;
-                }
-                if (normalizedUsername === "admin") {
-                    showMessage("That username is reserved. Please choose another one.");
-                    usernameInput.focus();
-                    return;
-                }
-
-                const users = readUsers();
-                if (users.some((user) => user.username.toLocaleLowerCase() === normalizedUsername)) {
-                    showMessage("An account with that username or email already exists.");
-                    usernameInput.focus();
-                    return;
-                }
-
-                const salt = createSalt();
-                const passwordHash = await hashPassword(password, salt);
-                users.push({ name, username, salt, passwordHash });
-                localStorage.setItem(usersStorageKey, JSON.stringify(users));
-                toggleForm();
-                showMessage("Account created. You can now sign in.", false);
-                usernameInput.value = username;
-                return;
+                const credential = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(credential.user, { displayName: name });
+                window.location.replace("index.html");
+            } else {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.replace("index.html");
             }
-
-            if (normalizedUsername === "admin" && password === "admin123") {
-                sessionStorage.setItem("hs_admin_authenticated", "true");
-                window.location.href = "index.html?admin=1";
-                return;
-            }
-
-            const users = readUsers();
-            const user = users.find((account) => account.username.toLocaleLowerCase() === normalizedUsername);
-            if (!user || await hashPassword(password, user.salt) !== user.passwordHash) {
-                showMessage("Username/email or password is incorrect.");
-                passwordInput.focus();
-                return;
-            }
-
-            sessionStorage.setItem("hs_current_user", JSON.stringify({ name: user.name, username: user.username }));
-            window.location.href = "index.html";
         } catch (error) {
-            showMessage(error instanceof Error ? error.message : "Unable to complete sign in. Please try again.");
+            console.error("Firebase email authentication failed.", error);
+            showMessage(authErrorMessage(error));
+        } finally {
+            submitButton.disabled = false;
         }
     });
+
+    document.getElementById("googleSignInButton").addEventListener("click", async () => {
+        if (!isFirebaseConfigured || !auth) {
+            showMessage("Firebase setup is incomplete. Add your Firebase web app configuration, enable Google sign-in, and try again.");
+            return;
+        }
+        try {
+            await signInWithPopup(auth, new GoogleAuthProvider());
+            window.location.replace("index.html");
+        } catch (error) {
+            console.error("Firebase Google authentication failed.", error);
+            showMessage(authErrorMessage(error));
+        }
+    });
+
+    if (!isFirebaseConfigured || !auth) {
+        showMessage("Firebase setup is incomplete. Add your Firebase web app configuration and enable Email/Password and Google sign-in.");
+        document.getElementById("submitBtn").disabled = true;
+        document.getElementById("googleSignInButton").disabled = true;
+    } else {
+        onAuthStateChanged(auth, (user) => {
+            if (user) window.location.replace("index.html");
+        }, (error) => {
+            console.error("Firebase authentication state could not be read.", error);
+            showMessage("Unable to check your Firebase sign-in status. Reload the page and try again.");
+        });
+    }
 </script>
 
 </body>
