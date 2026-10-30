@@ -33,8 +33,8 @@ const server = http.createServer((request, response) => {
         return;
     }
 
-    const relativePath = pathname === "/" ? "index.html" : pathname.slice(1);
-    const filePath = path.resolve(root, relativePath);
+    let relativePath = pathname === "/" ? "index.html" : pathname.slice(1);
+    let filePath = path.resolve(root, relativePath);
     if (!filePath.startsWith(`${root}${path.sep}`)) {
         response.writeHead(403);
         response.end("Forbidden");
@@ -48,7 +48,7 @@ const server = http.createServer((request, response) => {
         return;
     }
 
-    fs.stat(filePath, (statError, stats) => {
+    const serveFile = (statError, stats) => {
         if (statError || !stats.isFile()) {
             response.writeHead(404);
             response.end("Not found");
@@ -80,6 +80,17 @@ const server = http.createServer((request, response) => {
             response.end("Unable to read file");
         });
         file.pipe(response);
+    };
+
+    fs.stat(filePath, (statError, stats) => {
+        if (!statError && stats.isDirectory()) {
+            filePath = path.join(filePath, "index.html");
+            relativePath = path.join(relativePath, "index.html");
+            fs.stat(filePath, serveFile);
+            return;
+        }
+
+        serveFile(statError, stats);
     });
 });
 
